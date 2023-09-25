@@ -1,6 +1,6 @@
 /**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCServiceNowTest
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
@@ -17,33 +17,43 @@
 *
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
+@isTest
+private class ICCServiceNowTest {
+    
+    @isTest
+    static void testICCServiceNow() {
+        
+        lwapic__Integration_Channel__c icChannel = new lwapic__Integration_Channel__c( ); 
+        icChannel.lwapic__Channel_Name__c = 'test_channel_servicenow';
+        icChannel.lwapic__Request_Header__c = 'Content-Type=application/json';
+        icChannel.lwapic__Service_Name__c = 'ServiceNow';
+        icChannel.lwapic__Query_Params__c = '';
+        icChannel.lwapic__Method__c = 'POST';
+        
+        INSERT icChannel;
+        
+        ICCServiceNowRequest request = new ICCServiceNowRequest();        
+        List<ICCServiceNowRequest> requestList = new List<ICCServiceNowRequest>();
+        
+        request.channelName = icChannel.lwapic__Channel_Name__c;
+        request.runChannelInAsync = FALSE;
+        request.shortDescription = 'Test Incident';
+        requestList.add(request);
 
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
-    public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
-            resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
-        System.debug('original Response '+resWrapList);
-        System.debug('Raw Response '+resWrapList.get(0).responseBody);
+        Test.setMock(HttpCalloutMock.class, new ICCResponseGenerator());
         
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
-               
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
+        Test.startTest();         
+        List<ICCServiceNowResponse> responseList = ICCServiceNowConnector.execute(requestList);
+  
+        //List<HttpResponse> res = ICCServiceNowConnector.execute(requestList);        
+        Test.stopTest();
+        Assert.areEqual(1, responseList.size());
         
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
-       //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
-            
+        String actualValue = responseList[0].task_effective_number;
+        String expectedValue = '12345';
+        Assert.areEqual(expectedValue, actualValue, 'Incorrect task_effective_number');
+        
+        
+        
     }
 }

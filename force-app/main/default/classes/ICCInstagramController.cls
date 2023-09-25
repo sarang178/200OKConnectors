@@ -1,6 +1,6 @@
 /**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCInstagramController
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
@@ -18,32 +18,23 @@
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
 
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
+public with sharing class ICCInstagramController extends lwapic.ICCConnectorService {
     public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
-            resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
+
+       List<lwapic.ICResponseWrapper> resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
+              
         System.debug('original Response '+resWrapList);
         System.debug('Raw Response '+resWrapList.get(0).responseBody);
         
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
+        ICCInstagramResponse deserializeResponse= (ICCInstagramResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCInstagramResponse.class);
                
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
+        String containerID = deserializeResponse.id;
+        System.debug('containerID ' + containerID);
         
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
+        ICCInstagramResponse res = new ICCInstagramResponse();
+        res.id = containerID;        
        //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
+        return new List<ICCInstagramResponse>{res};
             
     }
 }

@@ -19,13 +19,12 @@
 **/
 
 public with sharing class ICCServiceNowResponse {
+    // response from service now
+    @AuraEnabled @InvocableVariable public Result result;
+    @AuraEnabled @InvocableVariable public String statusCode;
+    @AuraEnabled @InvocableVariable public String task_effective_number;
 
-    @AuraEnabled @InvocableVariable public List<Result> result;
-
-    public class Result {
-        @AuraEnabled @InvocableVariable public String incNumber;
-        @AuraEnabled @InvocableVariable public String description; 
-        
-    }        
-    
+   public class Result {
+       @AuraEnabled @InvocableVariable public String task_effective_number;      
+    }       
 }

@@ -1,6 +1,14 @@
 /**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 09-12-2023
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
+
+/**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCZuoraConnector
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
@@ -18,32 +26,32 @@
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
 
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
-    public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
-            resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
-        System.debug('original Response '+resWrapList);
-        System.debug('Raw Response '+resWrapList.get(0).responseBody);
-        
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
-               
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
-        
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
-       //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
-            
+
+
+public with sharing class ICCZuoraConnector {
+    @invocableMethod(label='200OK Get Zuora Connector' description='GET/POST Incidents record from Zuora' category='200OK Connectors')
+    public static List<ICCZuoraResponse> execute(List<ICCZuoraRequest> paramList){
+
+    if(paramList.isEmpty()){
+        //throw new ICCustomException('Please configure the connector properly.');
+        system.debug('Paramlist is empty');
     }
+
+    ICCZuoraRequest param = paramList.get(0);
+    Map<String,Object> paramReqMap = new Map<String,Object>{
+        'name' => param.acName,
+        'currency' => param.billingCurrency
+    };
+
+    lwapic.ICCConnectorService connectorService = new ICCZuoraController();
+    connectorService.setChannelName(param.channelName);
+    connectorService.setRequestPayload(JSON.serialize(paramReqMap));
+    connectorService.setIsAsync(param.runChannelInAsync);
+        
+   	List<ICCZuoraResponse> resList = (List<ICCZuoraResponse>) connectorService.execute();
+   
+    return resList;
+
+	}
+  
 }

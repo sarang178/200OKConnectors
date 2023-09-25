@@ -1,6 +1,6 @@
 /**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCInstagramRequest
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
@@ -18,32 +18,27 @@
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
 
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
-    public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
-            resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
-        System.debug('original Response '+resWrapList);
-        System.debug('Raw Response '+resWrapList.get(0).responseBody);
-        
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
-               
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
-        
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
-       //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
-            
-    }
-}
+public with sharing class ICCInstagramRequest {
+    
+    //These two variables are 200 OK specific
+    
+    @AuraEnabled @InvocableVariable (label='Channel Name' description='Channel Name' required=TRUE)
+    public String channelName = '';
+ 
+    @AuraEnabled @InvocableVariable (label='Run Channel in Async' description='Runs The Channel in Async')
+    public Boolean runChannelInAsync = FALSE;
+ 
+    @AuraEnabled @InvocableVariable (label='Caption' description='Post caption')
+    public String caption = '';
+
+    @AuraEnabled @InvocableVariable (label='File' description='file')
+    public String fileUrl = '';
+
+    @AuraEnabled @InvocableVariable(label='Content contentVersionIds' required=true)
+    public String contentVersionIds='';
+
+    @AuraEnabled @InvocableVariable (label='Access Token' description='Access Token')
+    public String accessToken = '';
+ 
+   
+ }

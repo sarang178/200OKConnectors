@@ -1,0 +1,19 @@
+<template>
+
+    <lightning-card title ="Select an account to update it's related contact's DoNotCall Field">
+
+    <div class="slds-p-around_medium">
+        <lightning-datatable key-field="Id" data={accounts} columns={columns} onrowselection={handleRowSelection}
+            max-row-selection="1">
+        </lightning-datatable>
+    </div>
+
+
+    <div class="slds-m-top_medium slds-align_absolute-center">
+        <lightning-button label="Update Contacts" onclick={handleUpdateContacts} disabled={isButtonDisabled}>
+        </lightning-button>
+    </div>
+
+
+</lightning-card>
+</template>

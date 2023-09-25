@@ -1,6 +1,6 @@
 /**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCResponseGenerator
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
@@ -17,33 +17,15 @@
 *
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
-
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
-    public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
-            resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
-        System.debug('original Response '+resWrapList);
-        System.debug('Raw Response '+resWrapList.get(0).responseBody);
-        
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
-               
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
-        
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
-       //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
-            
+// Inner mock class that implements HttpCalloutMock
+@IsTest
+global class ICCResponseGenerator implements HttpCalloutMock {
+    global HTTPResponse respond(HTTPRequest req) {
+        // Create a fake response
+        HttpResponse res = new HttpResponse();
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody('{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}');
+        res.setStatusCode(200);  // HTTP Status OK
+        return res;
     }
 }

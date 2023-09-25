@@ -1,13 +1,13 @@
 /**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCZuoraTest
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
 * @modifiedBy     Sarang Sawane
 * @maintainedBy   Sarang Sawane
 * @version        1.0
-* @created        2023-08-14
+* @created        2023-09-12
 * @modified       
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @changes
@@ -17,33 +17,39 @@
 *
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
+@isTest
+private class ICCZuoraTest {
+    
+    @isTest
+    static void testICCZuora() {
+        
+        lwapic__Integration_Channel__c icChannel = new lwapic__Integration_Channel__c( ); 
+        icChannel.lwapic__Channel_Name__c = 'test_channel_zuora';
+        icChannel.lwapic__Request_Header__c = 'Content-Type=application/json';
+        icChannel.lwapic__Service_Name__c = 'Zuora';
+        icChannel.lwapic__Query_Params__c = '';
+        icChannel.lwapic__Method__c = 'POST';
+        icChannel.lwapic__Request_Paylaod__c = '{"name": "test account","bill_to": {"first_name": "Amy","last_name": "Lawrence","address": {"country": "USA","state": "CA"}},"currency": "USD"}';
+        
+        INSERT icChannel;
+        
+        ICCZuoraRequest request = new ICCZuoraRequest();        
+        List<ICCZuoraRequest> requestList = new List<ICCZuoraRequest>();
+        
+        request.channelName = icChannel.lwapic__Channel_Name__c;
+        request.runChannelInAsync = FALSE;
+        request.acName = 'test account';
+        request.billingCurrency = '';
+        requestList.add(request);
 
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
-    public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
-            resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
-        System.debug('original Response '+resWrapList);
-        System.debug('Raw Response '+resWrapList.get(0).responseBody);
+        Test.setMock(HttpCalloutMock.class, new ICCResponseGenerator());
         
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
-               
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
+        Test.startTest(); 
         
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
-       //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
-            
+        List<ICCZuoraResponse> responseList = ICCZuoraConnector.execute(requestList);
+        
+        Test.stopTest();
+        
+        
     }
 }

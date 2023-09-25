@@ -17,27 +17,27 @@
 *
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
-
-
-
 public with sharing class ICCServiceNowConnector {
-@invocableMethod(label='200OK Get ServiceNow Connector' description='Get Incidents record from ServiceNow' category='200OK Connectors')
-public static List<ICCServiceNowResponse> execute(List<ICCServiceNowRequest> paramList){
+    public class ICCServiceNowConnectorException extends Exception {}
+    @invocableMethod(label='200OK Get ServiceNow Connector' description='GET/POST Incidents record from ServiceNow' category='200OK Connectors')
+    public static List<ICCServiceNowResponse> execute(List<ICCServiceNowRequest> paramList){
 
-    if(paramList.isEmpty()){
-        //throw new ICCustomException('Please configure the connector properly.');
-        system.debug('Paramlist is empty');
-    }
-
-    ICCServiceNowRequest param = paramList.get(0);
-
-    lwapic.ICCConnectorService connectorService = new ICCServiceNowController();
-    connectorService.setChannelName(param.channelName);
-    connectorService.setIsAsync(param.runChannelInAsync);
-   List<ICCServiceNowResponse> resList = (List<ICCServiceNowResponse>) connectorService.execute();
-   return resList;
-
+        if(paramList.isEmpty()){
+            throw new ICCServiceNowConnectorException('Please configure the connector properly.');
+        }
+    
+        ICCServiceNowRequest param = paramList.get(0);
+        Map<String,Object> paramReqMap = new Map<String,Object>{
+            'short_description' => param.shortDescription
+        };
+    
+        lwapic.ICCConnectorService connectorService = new ICCServiceNowController();
+        connectorService.setChannelName(param.channelName);
+        connectorService.setRequestPayload(JSON.serialize(paramReqMap));
+        connectorService.setIsAsync(param.runChannelInAsync);
+       
+        List<ICCServiceNowResponse> resList = (List<ICCServiceNowResponse>) connectorService.execute();
+        return resList;
+        
+	}  
 }
-  
-}
-

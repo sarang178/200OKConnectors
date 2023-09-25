@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>CreateIncident</name>
+        <label>Create Incident</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <actionName>ICCServiceNowConnector</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Success</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>channelName</name>
+            <value>
+                <stringValue>ServiceNow_Create_Incident</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>shortDescription</name>
+            <value>
+                <elementReference>Short_Description</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>58.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>Create Incident Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Incident Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Create_Incident</name>
+        <label>Create Incident</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>CreateIncident</targetReference>
+        </connector>
+        <fields>
+            <name>Short_Description</name>
+            <dataType>String</dataType>
+            <fieldText>Short Description</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Success</name>
+        <label>Success</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>successMessage</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(8, 176, 48); font-size: 14px;&quot;&gt;Incident has been created in Service Now successfully!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Incident Number : {!CreateIncident.task_effective_number}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Incident</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>GetServiceNowIncidents</name>
+        <label>Get Service Now Incidents</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <actionName>ICCServiceNowConnector</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Get_Incidents</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>channelName</name>
+            <value>
+                <stringValue>Create_ServiceNow_Incident</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>description</name>
+            <value>
+                <elementReference>Description</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>priority</name>
+            <value>
+                <elementReference>Priority</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>shortDescription</name>
+            <value>
+                <elementReference>Short_Description</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>58.0</apiVersion>
+    <choices>
+        <name>Critical</name>
+        <choiceText>1 - Critical</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>1</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>High</name>
+        <choiceText>2 - High</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>2</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Low</name>
+        <choiceText>4 - Low</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>4 - Low</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Moderate</name>
+        <choiceText>3 - Moderate</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>3 - Moderate</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Planning</name>
+        <choiceText>5 - Planning</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>5</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>ServiceNow Connector Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>ServiceNow Connector Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Create_Incident</name>
+        <label>Create Incident</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>GetServiceNowIncidents</targetReference>
+        </connector>
+        <fields>
+            <name>CreateIncident</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;Create Incident&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Short_Description</name>
+            <dataType>String</dataType>
+            <fieldText>Short Description</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Description</name>
+            <dataType>String</dataType>
+            <fieldText>Description</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>Priority</name>
+            <choiceReferences>Critical</choiceReferences>
+            <choiceReferences>High</choiceReferences>
+            <choiceReferences>Moderate</choiceReferences>
+            <choiceReferences>Low</choiceReferences>
+            <choiceReferences>Planning</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Priority</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Get_Incidents</name>
+        <label>Get Incidents</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>SuccessMsg</name>
+            <fieldText>&lt;p&gt;Your Incident has been created successfully!&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>output</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Incident Number: {!GetServiceNowIncidents.task_effective_number}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Incident</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,6 +1,14 @@
 /**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 09-12-2023
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
+
+/**
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┐
-* ICCServiceNowController
+* ICCZuoraController
 * @description    Additional information about this class should be added here
 * ──────────────────────────────────────────────────────────────────────────────────────────────────
 * @author         Sarang Sawane
@@ -18,32 +26,32 @@
 * ─────────────────────────────────────────────────────────────────────────────────────────────────┘
 **/
 
-public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
+public with sharing class ICCZuoraController extends lwapic.ICCConnectorService {
     public override Object execute(){
-        List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
-        lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
-        if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
-           resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
-           resWrap.statusCode = '200';  // HTTP Status OK
-           resWrapList.add(resWrap);
-        }else{
+
+       List<lwapic.ICResponseWrapper> resWrapList =  new List<lwapic.ICResponseWrapper>();
+       lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
+       if(System.Test.isRunningTest()){
+            resWrap.responseBody = '{"account_number":"00123", "statusCode":"200"}';
+            resWrap.statusCode = '200';
+            resWrapList.add(resWrap);
+       }else{
             resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
-        }
-          
+ 
+       }
+              
         System.debug('original Response '+resWrapList);
         System.debug('Raw Response '+resWrapList.get(0).responseBody);
         
-        ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
+        ICCZuoraResponse deserializeResponse= (ICCZuoraResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCZuoraResponse.class);
                
-        String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
+        String acNumber = deserializeResponse.account_number;
+        System.debug('Account Number ' + acNumber);
         
-        ICCServiceNowResponse res = new ICCServiceNowResponse();
-        res.task_effective_number = incNumber;        
+        ICCZuoraResponse res = new ICCZuoraResponse();
+        res.account_number = acNumber;        
        //resList.add(res);
-        return new List<ICCServiceNowResponse>{res};
+        return new List<ICCZuoraResponse>{res};
             
     }
 }
