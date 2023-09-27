@@ -19,7 +19,7 @@
 **/
 
 public with sharing class ICCServiceNowResponse {
-    // response from service now
+    // Handle response with same variable names from service now external system 
     @AuraEnabled @InvocableVariable public Result result;
     @AuraEnabled @InvocableVariable public String statusCode;
     @AuraEnabled @InvocableVariable public String task_effective_number;

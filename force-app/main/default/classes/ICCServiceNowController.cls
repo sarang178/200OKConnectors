@@ -19,30 +19,27 @@
 **/
 
 public with sharing class ICCServiceNowController extends lwapic.ICCConnectorService {
+    // The method executes the method 'execute' and returns response.
     public override Object execute(){
         List<lwapic.ICResponseWrapper> resWrapList = new List<lwapic.ICResponseWrapper>();
         lwapic.ICResponseWrapper resWrap = new lwapic.ICResponseWrapper();
         if(System.Test.isRunningTest()){
-            //Create a fake response
-           // res.requestHeader('Content-Type', 'application/json');
+            //Create a dumy response
            resWrap.responseBody = '{"result":{"task_effective_number":"12345","description":"Mocked Test Description"}, "statusCode": "200", "task_effective_number": "12345"}';
            resWrap.statusCode = '200';  // HTTP Status OK
            resWrapList.add(resWrap);
         }else{
             resWrapList =  (List<lwapic.ICResponseWrapper>) super.execute();
         }
-          
-        System.debug('original Response '+resWrapList);
-        System.debug('Raw Response '+resWrapList.get(0).responseBody);
-        
+     
+        // typecast the response
         ICCServiceNowResponse deserializeResponse= (ICCServiceNowResponse)JSON.deserialize(resWrapList.get(0).responseBody, ICCServiceNowResponse.class);
-               
+        //Assign incident number to a variable      
         String incNumber = deserializeResponse.result.task_effective_number;
-        System.debug('Inc Number ' + incNumber);
         
         ICCServiceNowResponse res = new ICCServiceNowResponse();
         res.task_effective_number = incNumber;        
-       //resList.add(res);
+       //return response
         return new List<ICCServiceNowResponse>{res};
             
     }

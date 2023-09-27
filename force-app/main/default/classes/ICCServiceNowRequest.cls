@@ -20,7 +20,7 @@
 
 public with sharing class ICCServiceNowRequest {
     
-   //These three variables are 200 OK specific which will get from flow.
+   //Initialize variable and the values will get from flow.
    
    @AuraEnabled @InvocableVariable (label='Channel Name' description='Channel Name' required=TRUE)
    public String channelName = '';
