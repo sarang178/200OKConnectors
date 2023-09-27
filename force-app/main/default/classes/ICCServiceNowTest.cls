@@ -22,7 +22,7 @@ private class ICCServiceNowTest {
     
     @isTest
     static void testICCServiceNow() {
-        
+        //Setup test Data
         lwapic__Integration_Channel__c icChannel = new lwapic__Integration_Channel__c( ); 
         icChannel.lwapic__Channel_Name__c = 'test_channel_servicenow';
         icChannel.lwapic__Request_Header__c = 'Content-Type=application/json';
@@ -39,21 +39,18 @@ private class ICCServiceNowTest {
         request.runChannelInAsync = FALSE;
         request.shortDescription = 'Test Incident';
         requestList.add(request);
-
+        // setup mock httpresponse class with dumy response
         Test.setMock(HttpCalloutMock.class, new ICCResponseGenerator());
-        
+        //invoke and test the class
         Test.startTest();         
-        List<ICCServiceNowResponse> responseList = ICCServiceNowConnector.execute(requestList);
-  
-        //List<HttpResponse> res = ICCServiceNowConnector.execute(requestList);        
+        List<ICCServiceNowResponse> responseList = ICCServiceNowConnector.execute(requestList);       
         Test.stopTest();
+        //Assertion
         Assert.areEqual(1, responseList.size());
         
         String actualValue = responseList[0].task_effective_number;
         String expectedValue = '12345';
-        Assert.areEqual(expectedValue, actualValue, 'Incorrect task_effective_number');
-        
-        
+        Assert.areEqual(expectedValue, actualValue, 'Incorrect task_effective_number');       
         
     }
 }
